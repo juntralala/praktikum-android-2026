@@ -1,7 +1,9 @@
 import Card from "@/components/Card";
 import { Button } from "@react-navigation/elements";
-import { FlatList, ScrollView, TextInput, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import datas from '@/assets/dataCard.json';
+import { Button as RNPButton } from 'react-native-paper';
+import { router } from "expo-router";
 
 export default function Index() {
   return (
@@ -15,6 +17,12 @@ export default function Index() {
 
         <Button onTouchMove={woi}>Hello</Button>
         <TextInput />
+        <RNPButton onPress={() => {
+          router.push("/todos");
+        }}>
+          <Text>Todolist</Text>
+        </RNPButton>
+        <ActivityIndicator />
       </View>
     </ScrollView>
   );

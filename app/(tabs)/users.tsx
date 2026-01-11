@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { FlatList, RefreshControl, Text, View } from "react-native";
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import Card from "@/components/Card";
@@ -11,18 +11,27 @@ async function fetchUsers() {
   });
 }
 
-export default function() {
+export default function () {
   const [users, setUsers] = useState([]);
 
   fetchUsers()
-  .then(response => setUsers(response.data?.restaurants))
-  .catch(e => console.error(e));
+    .then(response => setUsers(response.data?.restaurants))
+    .catch(e => console.error(e));
   return (
-    <View>
-      {users?.map((item: any) => (
+    <View style={{ height: 500 }}>
+      {/* {users?.map((item: any) => (
         <Card key={item?.id} id={item?.id} sumberGambar={`https://restaurant-api.dicoding.dev/images/medium/${item.pictureId}`} judul={item.name} keterangan={item.description}/>  
       )) 
-      || <Text>Tidak ada pengguna yang ditemukan</Text>}
+      || <Text>Tidak ada pengguna yang ditemukan</Text>} */}
+      <RefreshControl refreshing={false} onRefresh={() => {
+        alert("Marefresh datanya"); 
+      }}>
+        <FlatList data={users} keyExtractor={(item: any) => item.id} renderItem={
+          ({ item }: any) => (
+            <Card key={item?.id} id={item?.id} sumberGambar={`https://restaurant-api.dicoding.dev/images/medium/${item.pictureId}`} judul={item.name} keterangan={item.description} />
+          )
+        } ListEmptyComponent={<Text>Tidak ada pengguna yang ditemukan</Text>} />
+      </RefreshControl>
     </View>
   );
 }

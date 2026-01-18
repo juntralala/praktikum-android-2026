@@ -13,7 +13,7 @@ export default function Page() {
     <SafeAreaView style={{flex: 1}}>
       <View style={{ flex: 1 }}>
         <Image style={{ width: "100%", height: "60%" }} source={post?.sumberGambar} />
-        <View style={{ padding: 24, borderTopStartRadius: 40, borderEndStartRadius: 40, backgroundColor: "white", height: "100%" }}>
+        <View style={{ padding: 24, borderTopStartRadius: 40, borderEndStartRadius: 40, backgroundColor: "white", height: "100%", position: "relative", top: -35}}>
           <Text style={{ fontSize: 20, fontWeight: 500 }}>{post?.judul}</Text>
           <Text style={{}}>{post?.keterangan}</Text>
         </View>

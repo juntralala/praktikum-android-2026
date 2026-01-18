@@ -1,9 +1,9 @@
-import { Alert, FlatList, KeyboardAvoidingView, Modal as RNModal, Platform, TouchableWithoutFeedback, View } from "react-native";
-import { Button, Card, FAB, Icon, List, TextInput } from "react-native-paper";
-import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import Reanimated, { useAnimatedStyle } from "react-native-reanimated";
+import { useRef, useState } from "react";
+import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, TouchableWithoutFeedback, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { useState } from "react";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { Button, Card, FAB, Icon, List, TextInput, useTheme } from "react-native-paper";
+import Reanimated, { useAnimatedStyle } from "react-native-reanimated";
 
 const data = [
   {
@@ -32,29 +32,36 @@ const data = [
 export default function Index() {
   const [todos, setTodos] = useState(data);
   const [addFormVisible, setAddFormVisible] = useState(false);
+  const isSwiping = useRef(false);
 
   function handleDelete(id: number | string) {
-    Alert.alert(
-      "Hapus",
-      "Yakin untuk melanjutkan?",
-      [
-        {
-          text: "Batal",
-          style: "cancel"
-        },
-        {
-          text: "Ya",
-          style: "destructive",
-          onPress: () => {
-            setTodos(prevTodos => prevTodos.filter(item => item.id != id));
+    if (Platform.OS === 'web') {
+      if (window.confirm('Yakin untuk melanjutkan?')) {
+        setTodos(prevTodos => prevTodos.filter(item => item.id != id));
+      }
+    } else {
+      Alert.alert(
+        "Hapus",
+        "Yakin untuk melanjutkan?",
+        [
+          {
+            text: "Batal",
+            style: "cancel"
+          },
+          {
+            text: "Ya",
+            style: "destructive",
+            onPress: () => {
+              setTodos(prevTodos => prevTodos.filter(item => item.id != id));
+            }
           }
-        }
-      ]
-    );
+        ]
+      );
+    }
   }
 
   function handleToggleDone(id: number | string) {
-    setTodos(prevTodos => prevTodos.map(item => item.id == id ? {...item, done: !item.done} : item));
+    setTodos(prevTodos => prevTodos.map(item => item.id == id ? { ...item, done: !item.done } : item));
   }
 
   function TodoAddForm({ visible, close }: { visible: boolean, close: () => void }) {
@@ -79,7 +86,7 @@ export default function Index() {
     }
 
     return (
-      <RNModal
+      <Modal
         visible={visible}
         transparent
         animationType="fade"
@@ -104,15 +111,15 @@ export default function Index() {
                     <TextInput label="Deskripsi" value={description} onChangeText={setDescription} multiline numberOfLines={3} />
                   </Card.Content>
                   <Card.Actions>
-                    <Button onPress={handleSubmit}>Simpan</Button>
                     <Button onPress={close}>Batal</Button>
+                    <Button onPress={handleSubmit}>Simpan</Button>
                   </Card.Actions>
                 </Card>
               </TouchableWithoutFeedback>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
-      </RNModal>
+      </Modal>
     );
   }
 
@@ -132,6 +139,14 @@ export default function Index() {
           keyExtractor={(item: any) => item.id}
           renderItem={({ item }: any) => (
             <Swipeable
+              onSwipeableWillOpen={() => {
+                isSwiping.current = true
+                setTimeout(() => isSwiping.current = false, 70)
+              }}
+              onSwipeableClose={() => {
+                isSwiping.current = true
+                setTimeout(() => isSwiping.current = false, 70)
+              }}
               friction={2}
               renderRightActions={(prog, drag) => {
                 const animatedStyle = useAnimatedStyle(() => ({
@@ -140,7 +155,11 @@ export default function Index() {
                 }));
                 return (
                   <Reanimated.View style={[animatedStyle, { width: 60 }]}>
-                    <RectButton onPress={() => handleDelete(item.id)} style={{ flex: 1, backgroundColor: "red", alignItems: "center", justifyContent: "center" }} rippleColor="rgba(255, 255, 255, 0.3)">
+                    <RectButton
+                      style={{ flex: 1, backgroundColor: "red", alignItems: "center", justifyContent: "center" }}
+                      rippleColor="rgba(255, 255, 255, 0.3)"
+                      onPress={() => handleDelete(item.id)}
+                    >
                       <View accessible accessibilityRole="button">
                         <Icon color="white" source="trash-can" size={30} />
                       </View>
@@ -162,7 +181,11 @@ export default function Index() {
                   textDecorationLine: item.done === true ? 'line-through' : 'none',
                   color: item.done === true ? '#aaa' : '#666'
                 }}
-                onPress={() => handleToggleDone(item.id)}
+                onPress={() => {
+                  if (!isSwiping.current) {
+                    handleToggleDone(item.id);
+                  }
+                }}
               />
             </Swipeable>
           )}

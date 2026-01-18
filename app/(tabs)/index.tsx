@@ -14,18 +14,18 @@ export default function Index() {
   }));
   const [isTornado, setIsTornado] = useState(true);
 
-  useEffect(() => {
-    if(isTornado) {
-      rotation.value = withRepeat(
-        withTiming(360, {
-          duration: 1000,
-          easing: Easing.linear,
-        }),
-        -1,     // -1 = infinite
-        false  // no reverse
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if(isTornado) {
+  //     rotation.value = withRepeat(
+  //       withTiming(360, {
+  //         duration: 1000,
+  //         easing: Easing.linear,
+  //       }),
+  //       -1,     // -1 = infinite
+  //       false  // no reverse
+  //     );
+  //   }
+  // }, []);
 
   return (
     <ScrollView>

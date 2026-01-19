@@ -18,7 +18,7 @@ export default function () {
     .then(response => setUsers(response.data?.restaurants))
     .catch(e => console.error(e));
   return (
-    <View style={{ height: 500 }}>
+    <View style={{ flex: 1 }}>
       {/* {users?.map((item: any) => (
         <Card key={item?.id} id={item?.id} sumberGambar={`https://restaurant-api.dicoding.dev/images/medium/${item.pictureId}`} judul={item.name} keterangan={item.description}/>  
       )) 

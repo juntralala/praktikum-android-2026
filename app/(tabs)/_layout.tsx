@@ -12,8 +12,8 @@ export default function RootLayout() {
           <AntDesign name="home" size={18} color={color} />
         )
       }} />
-      <Tabs.Screen name="users" options={{
-        title: "Pengguna",
+      <Tabs.Screen name="restaurants" options={{
+        title: "Restoran",
         tabBarIcon: ({ color }) => (
           <FontAwesome name="users" size={18} color={color} />
         )
